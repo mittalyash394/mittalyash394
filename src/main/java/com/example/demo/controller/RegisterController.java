@@ -13,6 +13,7 @@ import org.apache.catalina.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/registration")
 public class RegisterController {
-    
+
     @Autowired
     private RegisterService registerService;
 
@@ -35,9 +36,16 @@ public class RegisterController {
     public static String ALREADY_PRESENT_EMAIL_ID = "EMAIL_ID IS ALREADY PRESENT IN THE DB";
 
     public static String USER_NOT_FOUND = "USER ID NOT FOUND";
+
+    @Value("${spring.application.name}")
+    String applicationName;
+
     @CrossOrigin
     @GetMapping(value = "/root", headers = "Accept=application/json")
     public String home(){
+
+        log.info("The application name is " + applicationName);
+
         log.info("This is home page");
         return "This is ";
     }
