@@ -5,16 +5,19 @@ import com.example.demo.exceptions.AlreadyPresentDetailException;
 import com.example.demo.exceptions.PasswordAndConfirmPasswordExceptions;
 import com.example.demo.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Date;
 
 @RestControllerAdvice
-public class ExceptionHandlerController {
+@ControllerAdvice
+public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = AlreadyPresentDetailException.class)
+    @ExceptionHandler(AlreadyPresentDetailException.class)
     @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
     public ErrorMessage alreadyPresentDetailException(AlreadyPresentDetailException alreadyPresentDetailException){
         return new ErrorMessage(HttpStatus.NOT_ACCEPTABLE.value(),
