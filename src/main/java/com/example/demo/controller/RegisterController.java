@@ -8,19 +8,17 @@ import com.example.demo.exceptions.AlreadyPresentDetailException;
 import com.example.demo.exceptions.PasswordAndConfirmPasswordExceptions;
 import com.example.demo.exceptions.UserNotFoundException;
 import com.example.demo.service.RegisterService;
-import com.example.demo.service.RegisterServiceImpl;
-import org.apache.catalina.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
-import java.util.HashMap;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -29,6 +27,10 @@ public class RegisterController {
 
     @Autowired
     private RegisterService registerService;
+
+
+    @Autowired
+    private ExceptionHandlerController exceptionHandlerController;
 
     public static final Logger log = LogManager.getLogger(RegisterController.class);
 
