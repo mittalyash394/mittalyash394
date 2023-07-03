@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.ErrorMessage;
-import com.example.demo.exceptions.AlreadyPresentDetailException;
-import com.example.demo.exceptions.PasswordAndConfirmPasswordExceptions;
-import com.example.demo.exceptions.UserNotFoundException;
+import com.example.demo.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -48,5 +46,24 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ExceptionHandler(value = NullUserIdExceptions.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage nullUserIdExceptions(NullUserIdExceptions nullUserIdExceptions){
+        return new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                nullUserIdExceptions.getMessage(),
+                "The userId cannot be null."
+        );
+    }
 
+
+    @ExceptionHandler(value = EmptyUserIdExceptions.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage emptyUserIdExceptions(EmptyUserIdExceptions emptyUserIdExceptions){
+        return new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                emptyUserIdExceptions.getMessage(),
+                "The userId cannot be empty"
+        );
+    }
 }

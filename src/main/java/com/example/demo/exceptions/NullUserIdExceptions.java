@@ -1,10 +1,10 @@
 package com.example.demo.exceptions;
 
-public class UserNotFoundException extends RuntimeException {
+public class NullUserIdExceptions extends RuntimeException{
 
     private static final long serialVersionUID = 1L;
 
-    public UserNotFoundException(String message){
+    public NullUserIdExceptions(String message){
         super(message);
     }
 

@@ -4,9 +4,7 @@ import com.example.demo.dto.LoginDto;
 import com.example.demo.dto.RegisterDto;
 import com.example.demo.dto.UpdatePasswordDto;
 import com.example.demo.entity.RegisterEntity;
-import com.example.demo.exceptions.AlreadyPresentDetailException;
-import com.example.demo.exceptions.PasswordAndConfirmPasswordExceptions;
-import com.example.demo.exceptions.UserNotFoundException;
+import com.example.demo.exceptions.*;
 import com.example.demo.service.RegisterService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,6 +36,10 @@ public class RegisterController {
     public static String ALREADY_PRESENT_EMAIL_ID = "EMAIL_ID IS ALREADY PRESENT IN THE DB";
 
     public static String USER_NOT_FOUND = "USER ID NOT FOUND";
+
+    public static String USER_ID_CANNOT_BE_NULL = "USER ID CANNOT BE NULL";
+
+    public static String EMPTY_USER_ID = "USER ID CANNOT BE EMPTY";
 
     @Value("${spring.application.name}")
     String applicationName;
@@ -118,17 +120,30 @@ public class RegisterController {
 
     @CrossOrigin
     @DeleteMapping(value = "deleteUserByUserId/{userId}", headers = "Accept=application/json")
-    public Boolean deleteUserByUserId(@Valid @Pattern(regexp = "(?i)^(?=.*[a-z])[a-z0-9]{8,20}$", message = "The userId should be in a proper format") @NotNull @NotEmpty @Positive @PathVariable String userId){
-        boolean isDeleted = false;
-        log.info("Deletion of the user");
-        try{
-            log.info("In loop oogf the deletion of the user");
-            isDeleted = registerService.deleteUserByUserId(userId);
-            isDeleted = true;
-        }catch (UserNotFoundException userNotFoundException){
-            log.error(userNotFoundException.toString());
+    public Boolean deleteUserByUserId(@Valid @NotEmpty @Pattern(regexp = "(?i)^(?=.*[a-z])[a-z0-9]{8,20}$", message = "The userId should be in a proper format") @Positive @PathVariable("userId") String userId){
+        log.error("The userId is " + userId);
+        log.info("The type of userId is " + userId.getClass().getTypeName());
+        if (userId.equals(null)){
+            log.info("Hi, this is YASH");
+            throw new NullUserIdExceptions(USER_ID_CANNOT_BE_NULL);
         }
-        return isDeleted;
+        else if(userId.isEmpty()){
+            throw new EmptyUserIdExceptions(EMPTY_USER_ID);
+        }
+        else {
+
+            boolean isDeleted = false;
+            log.info("Deletion of the user");
+            try {
+                log.info("In loop oogf the deletion of the user");
+                isDeleted = registerService.deleteUserByUserId(userId);
+                isDeleted = true;
+            } catch (UserNotFoundException userNotFoundException) {
+                log.error(userNotFoundException.toString());
+                throw new UserNotFoundException(USER_NOT_FOUND);
+            }
+            return isDeleted;
+        }
     }
 
 
