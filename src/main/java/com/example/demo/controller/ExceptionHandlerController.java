@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.entity.ErrorMessage;
 import com.example.demo.exceptions.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -64,6 +65,16 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
                 new Date(),
                 emptyUserIdExceptions.getMessage(),
                 "The userId cannot be empty"
+        );
+    }
+
+    @ExceptionHandler(value = UserIdPayloadExceptions.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage userIdPayloadExceptions(NullUserIdExceptions ex){
+        return new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                "Something went wrong"
         );
     }
 }
