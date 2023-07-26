@@ -16,10 +16,10 @@ public class PayloadCheck {
             if(userIdDto.getUserId().isEmpty()){
                 return false;
             }
-            return false;
+            return true;
         }catch (Exception e){
-            e.printStackTrace();
-            return false;
+            throw e;
+//            return false;
         }
     }
 

@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Date;
 
 @RestControllerAdvice
 @ControllerAdvice
+
 public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AlreadyPresentDetailException.class)
@@ -70,7 +72,17 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = UserIdPayloadExceptions.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorMessage userIdPayloadExceptions(NullUserIdExceptions ex){
+    public ErrorMessage userIdPayloadExceptions(UserIdPayloadExceptions ex){
+        return new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                "Something went wrong"
+        );
+    }
+
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage userIdPayloadExceptions(ConstraintViolationException ex){
         return new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
                 new Date(),
                 ex.getMessage(),

@@ -27,6 +27,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/registration")
+@Validated
 public class RegisterController {
 
     @Autowired
@@ -105,7 +106,7 @@ public class RegisterController {
 
     @CrossOrigin
     @GetMapping(value = "/getUserById/{userId}", headers = "Accept=application/json")
-    public RegisterEntity getUserById(@Valid @Pattern(regexp = "(?i)^(?=.*[a-z])[a-z0-9]{24,30}$", message = "The userId should be in proper format") @NotNull @NotEmpty @Positive @PathVariable String userId) throws UserNotFoundException {
+    public RegisterEntity getUserById(@PathVariable @Pattern(regexp = "(?i)^(?=.*[a-z])[a-z0-9]{24,30}$", message = "The userId should be in proper format") @NotNull @NotEmpty @Positive  String userId) throws UserNotFoundException {
 
         RegisterEntity registerEntity = null;
         log.info("Getting the user info");
@@ -130,7 +131,7 @@ public class RegisterController {
 
     @CrossOrigin
     @DeleteMapping(value = "deleteUserByUserId", headers = "Accept=application/json")
-    public Boolean deleteUserByUserId(@Validated @RequestBody UserIdDto userIdDto) throws UserIdPayloadExceptions {
+    public Boolean deleteUserByUserId(@RequestBody UserIdDto userIdDto) throws UserIdPayloadExceptions {
         if ( !payloadCheck.isValidPayload(userIdDto)) {
             throw new UserIdPayloadExceptions(USER_ID_PAYLOAD);
         } else {
