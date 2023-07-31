@@ -132,23 +132,27 @@ public class RegisterController {
     @CrossOrigin
     @DeleteMapping(value = "deleteUserByUserId", headers = "Accept=application/json")
     public Boolean deleteUserByUserId(@RequestBody UserIdDto userIdDto) throws UserIdPayloadExceptions {
-        if ( !payloadCheck.isValidPayload(userIdDto)) {
+        boolean isDeleted = false;
+        try {
+            if ( !payloadCheck.isValidPayload(userIdDto)) {
+                throw new UserIdPayloadExceptions(USER_ID_PAYLOAD);
+            }
+        } catch (UserIdPayloadExceptions ex) {
+            log.error(ex.toString());
             throw new UserIdPayloadExceptions(USER_ID_PAYLOAD);
-        } else {
+        }
+        try {
             log.error("The userId is " + userIdDto.getUserId());
             log.info("The type of userId is " + userIdDto.getUserId().getClass().getTypeName());
-            boolean isDeleted = false;
             log.info("Deletion of the user");
-            try {
                 log.info("In loop of the deletion of the user");
                 isDeleted = registerService.deleteUserByUserId(userIdDto.getUserId());
                 isDeleted = true;
-            } catch (UserNotFoundException userNotFoundException) {
+        } catch (UserNotFoundException userNotFoundException) {
                 log.error(userNotFoundException.toString());
                 throw new UserNotFoundException(USER_NOT_FOUND);
-            }
-            return isDeleted;
         }
+        return isDeleted;
     }
 
     @CrossOrigin
