@@ -99,4 +99,26 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
                 "Something went wrong"
         );
     }
+
+
+    @ExceptionHandler(value = RegisterUserPayloadExceptions.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage registerUserPayloadExceptions(RegisterUserPayloadExceptions ex){
+        return new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                "Something went wrong"
+        );
+    }
+
+    @ExceptionHandler(value = UpdatePasswordPayloadExceptions.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage updatePasswordPayloadExceptions(UpdatePasswordPayloadExceptions ex){
+        return new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                "Something went wrong"
+        );
+    }
+
 }
