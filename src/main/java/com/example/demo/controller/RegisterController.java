@@ -56,7 +56,7 @@ public class RegisterController {
 
     @CrossOrigin
     @GetMapping(value = "/root", headers = "Accept=application/json")
-    public String home(){
+    public String home() {
 
         log.info("The application name is " + applicationName);
 
@@ -65,26 +65,23 @@ public class RegisterController {
     }
 
     @PostMapping(value = "/registerUser", headers = "Accept=application/json")
-    public RegisterEntity registerUser(@Valid @NotNull @RequestBody RegisterDto registerDto) throws AlreadyPresentDetailException, PasswordAndConfirmPasswordExceptions {
+    public RegisterEntity registerUser(@Valid @NotNull @RequestBody RegisterDto registerDto) throws AlreadyPresentDetailException, PasswordAndConfirmPasswordExceptions, RegisterUserPayloadExceptions {
         RegisterEntity registerEntity = null;
 
         log.info("Checking if the password and the confirmPassword are same");
         log.info("In loop for checking if the password and confirmPassword are same");
-        if(registerDto.getPassword().equals(registerDto.getConfirmPassword())){
-            log.info("The passwords are same");
-            try{
-                log.info("Registration of user");
-                registerEntity = registerService.registerUser(registerDto);
-            }catch (AlreadyPresentDetailException alreadyPresentDetailException){
-                log.error(alreadyPresentDetailException.toString());
-                throw new AlreadyPresentDetailException(ALREADY_PRESENT_EMAIL_ID);
-            }
-            log.info(registerEntity);
+        log.info("The passwords are same");
+        if (!payloadCheck.isRegisterPayloadValid(registerDto)) {
+            throw new RegisterUserPayloadExceptions(USER_ID_PAYLOAD);
         }
-        else {
-            log.error("The passwords don't match");
-            throw new PasswordAndConfirmPasswordExceptions(PASSWORD_NOT_MATCH);
+        try {
+            log.info("Registration of user");
+            registerEntity = registerService.registerUser(registerDto);
+        } catch (AlreadyPresentDetailException alreadyPresentDetailException) {
+            log.error(alreadyPresentDetailException.toString());
+            throw new AlreadyPresentDetailException(ALREADY_PRESENT_EMAIL_ID);
         }
+        log.info(registerEntity);
         return registerEntity;
     }
 
@@ -93,14 +90,14 @@ public class RegisterController {
     public RegisterEntity loginUser(@Valid @RequestBody LoginDto loginDto) throws UserNotFoundException {
         log.info("Logging in for the user");
         RegisterEntity registerEntity = null;
-            log.info("The login payload is " + loginDto);
-            if(!payloadCheck.isLoginPayloadValid(loginDto)){
-                throw new LoginPayloadExceptions(LOGIN_PAYLOAD);
-            }
-        try{
+        log.info("The login payload is " + loginDto);
+        if (!payloadCheck.isLoginPayloadValid(loginDto)) {
+            throw new LoginPayloadExceptions(LOGIN_PAYLOAD);
+        }
+        try {
             log.info("In loop of logging in");
-             registerEntity = registerService.loginUser(loginDto);
-        }catch (UserNotFoundException userNotFoundException){
+            registerEntity = registerService.loginUser(loginDto);
+        } catch (UserNotFoundException userNotFoundException) {
             log.error(userNotFoundException.toString());
             throw new UserNotFoundException(USER_NOT_FOUND);
         }
@@ -109,14 +106,14 @@ public class RegisterController {
 
     @CrossOrigin
     @GetMapping(value = "/getUserById/{userId}", headers = "Accept=application/json")
-    public RegisterEntity getUserById(@PathVariable @Pattern(regexp = "(?i)^(?=.*[a-z])[a-z0-9]{24,30}$", message = "The userId should be in proper format") @NotNull @NotEmpty @Positive  String userId) throws UserNotFoundException {
+    public RegisterEntity getUserById(@PathVariable @Pattern(regexp = "(?i)^(?=.*[a-z])[a-z0-9]{24,30}$", message = "The userId should be in proper format") @NotNull @NotEmpty @Positive String userId) throws UserNotFoundException {
 
         RegisterEntity registerEntity = null;
         log.info("Getting the user info");
         try {
             log.info("In loop of getting the user info");
             registerEntity = registerService.getUserById(userId);
-        }catch(UserNotFoundException userNotFoundException){
+        } catch (UserNotFoundException userNotFoundException) {
             log.error(userNotFoundException.toString());
             throw new UserNotFoundException(USER_NOT_FOUND);
         }
@@ -125,7 +122,7 @@ public class RegisterController {
 
     @CrossOrigin
     @GetMapping(value = "/allUsers", headers = "Accept=application/json")
-    public List<RegisterEntity> allUsers(){
+    public List<RegisterEntity> allUsers() {
         log.info("In loop of getting all the users");
         List<RegisterEntity> allUsers = registerService.allUsers();
         log.info(allUsers);
@@ -137,7 +134,7 @@ public class RegisterController {
     public Boolean deleteUserByUserId(@RequestBody UserIdDto userIdDto) throws UserIdPayloadExceptions {
         boolean isDeleted = false;
         try {
-            if ( !payloadCheck.isValidPayload(userIdDto)) {
+            if (!payloadCheck.isValidPayload(userIdDto)) {
                 throw new UserIdPayloadExceptions(USER_ID_PAYLOAD);
             }
         } catch (UserIdPayloadExceptions ex) {
@@ -148,35 +145,31 @@ public class RegisterController {
             log.error("The userId is " + userIdDto.getUserId());
             log.info("The type of userId is " + userIdDto.getUserId().getClass().getTypeName());
             log.info("Deletion of the user");
-                log.info("In loop of the deletion of the user");
-                isDeleted = registerService.deleteUserByUserId(userIdDto.getUserId());
-                isDeleted = true;
+            log.info("In loop of the deletion of the user");
+            isDeleted = registerService.deleteUserByUserId(userIdDto.getUserId());
+            isDeleted = true;
         } catch (UserNotFoundException userNotFoundException) {
-                log.error(userNotFoundException.toString());
-                throw new UserNotFoundException(USER_NOT_FOUND);
+            log.error(userNotFoundException.toString());
+            throw new UserNotFoundException(USER_NOT_FOUND);
         }
         return isDeleted;
     }
 
     @CrossOrigin
     @PutMapping(value = "updatePassword/{userId}", headers = "Accept=application/json")
-    public RegisterEntity updatePassword(@Valid @Pattern(regexp = "(?i)^(?=.*[a-z])[a-z0-9]{8,20}$", message = "The userId should be in a proper format") @NotNull @NotEmpty @Positive @PathVariable String userId,@Valid @RequestBody UpdatePasswordDto updatePasswordDto) throws UserNotFoundException, PasswordAndConfirmPasswordExceptions {
+    public RegisterEntity updatePassword(@Valid @PathVariable String userId, @Valid @RequestBody UpdatePasswordDto updatePasswordDto) throws UserNotFoundException, PasswordAndConfirmPasswordExceptions, UpdatePasswordPayloadExceptions {
         RegisterEntity registerEntity = null;
-        log.info("Updating the password of the user");
-        if(updatePasswordDto.getUpdatePassword().equals(updatePasswordDto.getConfirmUpdatePassword())){
-            log.info("The passwords are same, updating them");
-            try{
-                log.info("In loop of the updating the password of the user");
-                registerEntity = registerService.updatePassword(userId, updatePasswordDto);
-            }catch (UserNotFoundException userNotFoundException){
-                log.error(userNotFoundException.toString());
-                throw new UserNotFoundException(USER_NOT_FOUND);
-            }
+
+        log.info("The passwords are same, updating them");
+        if (!payloadCheck.isUpdatePasswordValid(updatePasswordDto)) {
+            throw new UpdatePasswordPayloadExceptions(USER_ID_PAYLOAD);
         }
-        else {
-            log.error("The passwords don't match");
-            log.info("Hello Yash");
-            throw new PasswordAndConfirmPasswordExceptions(PASSWORD_NOT_MATCH);
+        try {
+            log.info("In loop of the updating the password of the user");
+            registerEntity = registerService.updatePassword(userId, updatePasswordDto);
+        } catch (UserNotFoundException userNotFoundException) {
+            log.error(userNotFoundException.toString());
+            throw new UserNotFoundException(USER_NOT_FOUND);
         }
         return registerEntity;
     }
