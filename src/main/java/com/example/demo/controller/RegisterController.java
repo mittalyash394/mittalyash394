@@ -6,10 +6,7 @@ import com.example.demo.dto.RegisterDto;
 import com.example.demo.dto.UserIdDto;
 import com.example.demo.dto.UpdatePasswordDto;
 import com.example.demo.entity.RegisterEntity;
-import com.example.demo.exceptions.AlreadyPresentDetailException;
-import com.example.demo.exceptions.PasswordAndConfirmPasswordExceptions;
-import com.example.demo.exceptions.UserIdPayloadExceptions;
-import com.example.demo.exceptions.UserNotFoundException;
+import com.example.demo.exceptions.*;
 import com.example.demo.service.RegisterService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,6 +48,8 @@ public class RegisterController {
     public static String EMPTY_USER_ID = "USER ID CANNOT BE EMPTY";
 
     public static String USER_ID_PAYLOAD = "USER_ID PAYLOAD IS NOT CORRECT";
+
+    public static String LOGIN_PAYLOAD = "THE LOGIN PAYLOAD IS NOT CORRECT";
 
     @Value("${spring.application.name}")
     String applicationName;
@@ -94,6 +93,10 @@ public class RegisterController {
     public RegisterEntity loginUser(@Valid @RequestBody LoginDto loginDto) throws UserNotFoundException {
         log.info("Logging in for the user");
         RegisterEntity registerEntity = null;
+            log.info("The login payload is " + loginDto);
+            if(!payloadCheck.isLoginPayloadValid(loginDto)){
+                throw new LoginPayloadExceptions(LOGIN_PAYLOAD);
+            }
         try{
             log.info("In loop of logging in");
              registerEntity = registerService.loginUser(loginDto);
