@@ -35,7 +35,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         return new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
                 new Date(),
                 passwordAndConfirmPasswordExceptions.getMessage(),
-                "Password and Confirm password don't match"
+                "Something went wrong"
                 );
     }
 

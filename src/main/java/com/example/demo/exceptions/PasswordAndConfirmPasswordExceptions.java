@@ -4,7 +4,7 @@ public class PasswordAndConfirmPasswordExceptions extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     public PasswordAndConfirmPasswordExceptions(String passwordNotMatch){
-        super();
+        super(passwordNotMatch);
     }
 
 }

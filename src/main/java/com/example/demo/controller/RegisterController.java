@@ -38,7 +38,7 @@ public class RegisterController {
 
     public static final Logger log = LogManager.getLogger(RegisterController.class);
 
-    public static String PASSWORD_NOT_MATCH = "PASSWORD AND CONFIRM_PASSWORD NOT MATCH";
+    public static String PASSWORD_NOT_MATCH = "PASSWORD AND CONFIRM_PASSWORD NOT MATCHED";
     public static String ALREADY_PRESENT_EMAIL_ID = "EMAIL_ID IS ALREADY PRESENT IN THE DB";
 
     public static String USER_NOT_FOUND = "USER ID NOT FOUND";
@@ -68,9 +68,7 @@ public class RegisterController {
     public RegisterEntity registerUser(@Valid @NotNull @RequestBody RegisterDto registerDto) throws AlreadyPresentDetailException, PasswordAndConfirmPasswordExceptions, RegisterUserPayloadExceptions {
         RegisterEntity registerEntity = null;
 
-        log.info("Checking if the password and the confirmPassword are same");
-        log.info("In loop for checking if the password and confirmPassword are same");
-        log.info("The passwords are same");
+        log.info("Checking if the payload for registration of a user is correct or not");
         if (!payloadCheck.isRegisterPayloadValid(registerDto)) {
             throw new RegisterUserPayloadExceptions(USER_ID_PAYLOAD);
         }
@@ -157,12 +155,12 @@ public class RegisterController {
 
     @CrossOrigin
     @PutMapping(value = "updatePassword/{userId}", headers = "Accept=application/json")
-    public RegisterEntity updatePassword(@Valid @PathVariable String userId, @Valid @RequestBody UpdatePasswordDto updatePasswordDto) throws UserNotFoundException, PasswordAndConfirmPasswordExceptions, UpdatePasswordPayloadExceptions {
+    public RegisterEntity updatePassword(@Valid @PathVariable String userId, @Valid @RequestBody UpdatePasswordDto updatePasswordDto) throws UserNotFoundException, UpdatePasswordPayloadExceptions {
         RegisterEntity registerEntity = null;
 
-        log.info("The passwords are same, updating them");
+        log.info("Checking for updatePasswordPayload");
         if (!payloadCheck.isUpdatePasswordValid(updatePasswordDto)) {
-            throw new UpdatePasswordPayloadExceptions(USER_ID_PAYLOAD);
+            throw new UpdatePasswordPayloadExceptions(PASSWORD_NOT_MATCH);
         }
         try {
             log.info("In loop of the updating the password of the user");
