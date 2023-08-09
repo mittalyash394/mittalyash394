@@ -55,7 +55,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         return new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
                 new Date(),
                 nullUserIdExceptions.getMessage(),
-                "The userId cannot be null."
+                "Something went wrong"
         );
     }
 

@@ -43,7 +43,7 @@ public class RegisterController {
 
     public static String USER_NOT_FOUND = "USER ID NOT FOUND";
 
-    public static String USER_ID_CANNOT_BE_NULL = "USER ID CANNOT BE NULL";
+    public static String USER_ID_CANNOT_BE_NULL = "USER ID CANNOT BE NULL/EMPTY";
 
     public static String EMPTY_USER_ID = "USER ID CANNOT BE EMPTY";
 
@@ -104,10 +104,13 @@ public class RegisterController {
 
     @CrossOrigin
     @GetMapping(value = "/getUserById/{userId}", headers = "Accept=application/json")
-    public RegisterEntity getUserById(@PathVariable @Pattern(regexp = "(?i)^(?=.*[a-z])[a-z0-9]{24,30}$", message = "The userId should be in proper format") @NotNull @NotEmpty @Positive String userId) throws UserNotFoundException {
+    public RegisterEntity getUserById(@PathVariable String userId) throws UserNotFoundException {
 
         RegisterEntity registerEntity = null;
         log.info("Getting the user info");
+        if(!payloadCheck.isUserIdValid(userId)){
+            throw new NullUserIdExceptions(USER_ID_CANNOT_BE_NULL);
+        }
         try {
             log.info("In loop of getting the user info");
             registerEntity = registerService.getUserById(userId);
@@ -159,6 +162,9 @@ public class RegisterController {
         RegisterEntity registerEntity = null;
 
         log.info("Checking for updatePasswordPayload");
+        if(!payloadCheck.isUserIdValid(userId)){
+            throw new NullUserIdExceptions(USER_ID_CANNOT_BE_NULL);
+        }
         if (!payloadCheck.isUpdatePasswordValid(updatePasswordDto)) {
             throw new UpdatePasswordPayloadExceptions(PASSWORD_NOT_MATCH);
         }
