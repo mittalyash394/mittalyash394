@@ -5,7 +5,7 @@ import com.example.demo.dto.RegisterDto;
 import com.example.demo.dto.UpdatePasswordDto;
 import com.example.demo.dto.UserIdDto;
 import com.example.demo.exceptions.LoginPayloadExceptions;
-import com.example.demo.exceptions.NullUserIdExceptions;
+import com.example.demo.exceptions.NullEmptyUserIdExceptions;
 import com.example.demo.exceptions.PasswordAndConfirmPasswordExceptions;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -18,20 +18,16 @@ public class PayloadCheck {
 
     public boolean isValidPayload(UserIdDto userIdDto) {
         if (userIdDto.getUserId() == null || userIdDto.getUserId().isEmpty() || userIdDto.getUserId().equals(" ")) {
-            throw new NullUserIdExceptions("UserId cannot be null or empty");
+            throw new NullEmptyUserIdExceptions("UserId cannot be null or empty");
         }
         return true;
 
     }
 
     public boolean isLoginPayloadValid(LoginDto loginDto) {
-
         Pattern p = Pattern.compile("");
         String st = "";
         p.matcher(st).matches();
-//            if(loginDto.getEmailId() == null){
-//                throw new LoginPayloadExceptions("EmailId cannot be null");
-//            }
         if (loginDto.getEmailId() == null || loginDto.getEmailId().isEmpty() || loginDto.getEmailId().equals(" ")) {
             throw new LoginPayloadExceptions("EmailId cannot be null or empty");
         }
@@ -39,11 +35,9 @@ public class PayloadCheck {
             throw new LoginPayloadExceptions("Password cannot be null or empty");
         }
         return true;
-
     }
 
     public boolean isRegisterPayloadValid(RegisterDto registerDto) {
-
         if (registerDto.getEmailId() == null || registerDto.getEmailId().isEmpty() || registerDto.getEmailId().equals(" ")) {
             throw new LoginPayloadExceptions("EmailId cannot be null or empty");
         }
@@ -66,7 +60,6 @@ public class PayloadCheck {
     }
 
     public boolean isUpdatePasswordValid(UpdatePasswordDto updatePasswordDto) {
-
         if (updatePasswordDto.getUpdatePassword() == null || updatePasswordDto.getUpdatePassword().isEmpty() || updatePasswordDto.getUpdatePassword().equals(" ")) {
             throw new LoginPayloadExceptions("Password cannot be null or empty");
         }
@@ -81,7 +74,7 @@ public class PayloadCheck {
 
     public boolean isUserIdValid(String userId) {
         if (userId == null || userId.isEmpty() || userId.equals(" ")) {
-            throw new NullUserIdExceptions("UserId cannot be null or empty");
+            throw new NullEmptyUserIdExceptions("UserId cannot be null or empty");
         }
         return true;
     }

@@ -1,11 +1,10 @@
 package com.example.demo.exceptions;
 
-public class EmptyUserIdExceptions extends RuntimeException{
-
-
+public class NullEmptyUserIdExceptions extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    public EmptyUserIdExceptions(String message){
+    public NullEmptyUserIdExceptions(String message) {
         super(message);
     }
+
 }

@@ -4,7 +4,6 @@ import com.example.demo.entity.RegisterEntity;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-//@Repository
 public interface RegisterRepo extends MongoRepository<RegisterEntity, String> {
 
 
