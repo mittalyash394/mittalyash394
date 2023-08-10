@@ -12,15 +12,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class RegisterServiceImpl implements RegisterService{
+public class RegisterServiceImpl implements RegisterService {
 
     @Autowired
     private RegisterRepo registerRepo;
@@ -30,6 +28,7 @@ public class RegisterServiceImpl implements RegisterService{
     public static String ALREADY_PRESENT_EMAIL_ID = "EMAIL_ID IS ALREADY PRESENT IN THE DB";
 
     public static String USER_NOT_FOUND = "USER ID NOT FOUND";
+
     @Override
     public RegisterEntity registerUser(RegisterDto registerDto) throws AlreadyPresentDetailException {
         RegisterEntity registerEntity = new RegisterEntity();
@@ -56,7 +55,7 @@ public class RegisterServiceImpl implements RegisterService{
     public RegisterEntity loginUser(LoginDto loginDto) throws UserNotFoundException {
         RegisterEntity registerEntity = registerRepo.findUserByEmailIdAndPassword(loginDto.getEmailId(), loginDto.getPassword());
         log.info(registerEntity);
-        if(registerEntity == null){
+        if (registerEntity == null) {
             throw new UserNotFoundException(USER_NOT_FOUND);
         }
         return registerEntity;
@@ -66,7 +65,7 @@ public class RegisterServiceImpl implements RegisterService{
     public RegisterEntity getUserById(String userId) throws UserNotFoundException {
         Optional<RegisterEntity> registerEntity = registerRepo.findById(userId);
         log.info("Getting the user details by userId");
-        if(registerEntity.isEmpty()){
+        if (registerEntity.isEmpty()) {
             throw new UserNotFoundException(USER_NOT_FOUND);
         }
         return registerEntity.get();
@@ -76,7 +75,7 @@ public class RegisterServiceImpl implements RegisterService{
     public List<RegisterEntity> allUsers() {
         log.info("Getting all the users");
         List<RegisterEntity> allUsers = registerRepo.findAll();
-        if(allUsers.size() == 0){
+        if (allUsers.size() == 0) {
             return allUsers;
         }
         return allUsers;
@@ -86,7 +85,7 @@ public class RegisterServiceImpl implements RegisterService{
     public Boolean deleteUserByUserId(String userId) throws UserNotFoundException {
         Optional<RegisterEntity> registerEntity = registerRepo.findById(userId);
         log.info("Deletion of the user by the userId");
-        if(registerEntity.isEmpty()){
+        if (registerEntity.isEmpty()) {
             throw new UserNotFoundException(USER_NOT_FOUND);
         }
         RegisterEntity isDeleted = registerRepo.deleteUserByUserId(userId);
@@ -100,9 +99,9 @@ public class RegisterServiceImpl implements RegisterService{
         Date date = new Date();
         Optional<RegisterEntity> registerEntityFromDB = registerRepo.findById(userId);
         log.info("Updating the password of the user");
-        if(registerEntityFromDB.isEmpty()){
+        if (registerEntityFromDB.isEmpty()) {
             throw new UserNotFoundException(USER_NOT_FOUND);
-        }else {
+        } else {
             log.info("In loop of updating the user's password");
             registerEntity.setUserId(userId);
             registerEntity.setFirstName(registerEntityFromDB.get().getFirstName());
@@ -114,7 +113,6 @@ public class RegisterServiceImpl implements RegisterService{
             registerEntity.setUpdatedAt(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(date));
             registerRepo.save(registerEntity);
         }
-
         return registerEntity;
     }
 

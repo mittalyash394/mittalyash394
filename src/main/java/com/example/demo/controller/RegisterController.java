@@ -16,10 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -57,9 +54,7 @@ public class RegisterController {
     @CrossOrigin
     @GetMapping(value = "/root", headers = "Accept=application/json")
     public String home() {
-
         log.info("The application name is " + applicationName);
-
         log.info("This is home page");
         return "This is ";
     }
@@ -67,7 +62,6 @@ public class RegisterController {
     @PostMapping(value = "/registerUser", headers = "Accept=application/json")
     public RegisterEntity registerUser(@Valid @NotNull @RequestBody RegisterDto registerDto) throws AlreadyPresentDetailException, PasswordAndConfirmPasswordExceptions, RegisterUserPayloadExceptions {
         RegisterEntity registerEntity = null;
-
         log.info("Checking if the payload for registration of a user is correct or not");
         if (!payloadCheck.isRegisterPayloadValid(registerDto)) {
             throw new RegisterUserPayloadExceptions(USER_ID_PAYLOAD);
@@ -105,11 +99,10 @@ public class RegisterController {
     @CrossOrigin
     @GetMapping(value = "/getUserById/{userId}", headers = "Accept=application/json")
     public RegisterEntity getUserById(@PathVariable String userId) throws UserNotFoundException {
-
         RegisterEntity registerEntity = null;
         log.info("Getting the user info");
-        if(!payloadCheck.isUserIdValid(userId)){
-            throw new NullUserIdExceptions(USER_ID_CANNOT_BE_NULL);
+        if (!payloadCheck.isUserIdValid(userId)) {
+            throw new NullEmptyUserIdExceptions(USER_ID_CANNOT_BE_NULL);
         }
         try {
             log.info("In loop of getting the user info");
@@ -160,10 +153,9 @@ public class RegisterController {
     @PutMapping(value = "updatePassword/{userId}", headers = "Accept=application/json")
     public RegisterEntity updatePassword(@Valid @PathVariable String userId, @Valid @RequestBody UpdatePasswordDto updatePasswordDto) throws UserNotFoundException, UpdatePasswordPayloadExceptions {
         RegisterEntity registerEntity = null;
-
         log.info("Checking for updatePasswordPayload");
-        if(!payloadCheck.isUserIdValid(userId)){
-            throw new NullUserIdExceptions(USER_ID_CANNOT_BE_NULL);
+        if (!payloadCheck.isUserIdValid(userId)) {
+            throw new NullEmptyUserIdExceptions(USER_ID_CANNOT_BE_NULL);
         }
         if (!payloadCheck.isUpdatePasswordValid(updatePasswordDto)) {
             throw new UpdatePasswordPayloadExceptions(PASSWORD_NOT_MATCH);
