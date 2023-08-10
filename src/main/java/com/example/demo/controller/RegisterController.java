@@ -38,12 +38,12 @@ public class RegisterController {
 
     public static final Logger log = LogManager.getLogger(RegisterController.class);
 
-    public static String PASSWORD_NOT_MATCH = "PASSWORD AND CONFIRM_PASSWORD NOT MATCH";
+    public static String PASSWORD_NOT_MATCH = "PASSWORD AND CONFIRM_PASSWORD NOT MATCHED";
     public static String ALREADY_PRESENT_EMAIL_ID = "EMAIL_ID IS ALREADY PRESENT IN THE DB";
 
     public static String USER_NOT_FOUND = "USER ID NOT FOUND";
 
-    public static String USER_ID_CANNOT_BE_NULL = "USER ID CANNOT BE NULL";
+    public static String USER_ID_CANNOT_BE_NULL = "USER ID CANNOT BE NULL/EMPTY";
 
     public static String EMPTY_USER_ID = "USER ID CANNOT BE EMPTY";
 
@@ -68,9 +68,7 @@ public class RegisterController {
     public RegisterEntity registerUser(@Valid @NotNull @RequestBody RegisterDto registerDto) throws AlreadyPresentDetailException, PasswordAndConfirmPasswordExceptions, RegisterUserPayloadExceptions {
         RegisterEntity registerEntity = null;
 
-        log.info("Checking if the password and the confirmPassword are same");
-        log.info("In loop for checking if the password and confirmPassword are same");
-        log.info("The passwords are same");
+        log.info("Checking if the payload for registration of a user is correct or not");
         if (!payloadCheck.isRegisterPayloadValid(registerDto)) {
             throw new RegisterUserPayloadExceptions(USER_ID_PAYLOAD);
         }
@@ -106,10 +104,13 @@ public class RegisterController {
 
     @CrossOrigin
     @GetMapping(value = "/getUserById/{userId}", headers = "Accept=application/json")
-    public RegisterEntity getUserById(@PathVariable @Pattern(regexp = "(?i)^(?=.*[a-z])[a-z0-9]{24,30}$", message = "The userId should be in proper format") @NotNull @NotEmpty @Positive String userId) throws UserNotFoundException {
+    public RegisterEntity getUserById(@PathVariable String userId) throws UserNotFoundException {
 
         RegisterEntity registerEntity = null;
         log.info("Getting the user info");
+        if(!payloadCheck.isUserIdValid(userId)){
+            throw new NullUserIdExceptions(USER_ID_CANNOT_BE_NULL);
+        }
         try {
             log.info("In loop of getting the user info");
             registerEntity = registerService.getUserById(userId);
@@ -157,12 +158,15 @@ public class RegisterController {
 
     @CrossOrigin
     @PutMapping(value = "updatePassword/{userId}", headers = "Accept=application/json")
-    public RegisterEntity updatePassword(@Valid @PathVariable String userId, @Valid @RequestBody UpdatePasswordDto updatePasswordDto) throws UserNotFoundException, PasswordAndConfirmPasswordExceptions, UpdatePasswordPayloadExceptions {
+    public RegisterEntity updatePassword(@Valid @PathVariable String userId, @Valid @RequestBody UpdatePasswordDto updatePasswordDto) throws UserNotFoundException, UpdatePasswordPayloadExceptions {
         RegisterEntity registerEntity = null;
 
-        log.info("The passwords are same, updating them");
+        log.info("Checking for updatePasswordPayload");
+        if(!payloadCheck.isUserIdValid(userId)){
+            throw new NullUserIdExceptions(USER_ID_CANNOT_BE_NULL);
+        }
         if (!payloadCheck.isUpdatePasswordValid(updatePasswordDto)) {
-            throw new UpdatePasswordPayloadExceptions(USER_ID_PAYLOAD);
+            throw new UpdatePasswordPayloadExceptions(PASSWORD_NOT_MATCH);
         }
         try {
             log.info("In loop of the updating the password of the user");
