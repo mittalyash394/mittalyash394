@@ -109,4 +109,54 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ExceptionHandler(value = EmailIdFormatExceptions.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage emailIdFormatExceptions(EmailIdFormatExceptions ex) {
+        return new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                "Something went wrong"
+        );
+    }
+
+    @ExceptionHandler(value = PasswordFormatExceptions.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage passwordFormatExceptions(PasswordFormatExceptions ex) {
+        return new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                "Something went wrong"
+        );
+    }
+
+    @ExceptionHandler(value = FirstNameFormatExceptions.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage firstNameFormatExceptions(FirstNameFormatExceptions ex) {
+        return new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                "Something went wrong"
+        );
+    }
+
+    @ExceptionHandler(value = LastNameFormatExceptions.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage lastNameFormatExceptions(LastNameFormatExceptions ex) {
+        return new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                "Something went wrong"
+        );
+    }
+
+    @ExceptionHandler(value = ConfirmPasswordFormatExceptions.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage confirmPasswordFormatExceptions(ConfirmPasswordFormatExceptions ex) {
+        return new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                "Something went wrong"
+        );
+    }
+
 }
